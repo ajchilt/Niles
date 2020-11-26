@@ -477,7 +477,7 @@ function updateCalendar(message, dayMap, human) {
       }
     });
   }).catch((err) => {
-    helpers.log("error fetching previous calendar message in guild: " + message.guild.id + ": " + err);
+    helpers.log(`error fetching previous calendar message in guild: ${message.guild.id} : ${err}`);
     //If theres an updater running try and kill it.
     try {
       clearInterval(autoUpdater[message.guild.id]);

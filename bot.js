@@ -80,7 +80,7 @@ client.on("message", (message) => {
   } catch (err) {
     guilds.create(message.guild);
     message.channel.send("Sorry, I've had to re-create your database files, you'll have to run the setup process again :(");
-    return helpers.log("settings file not created properly in guild: " + message.guild.id + ". Attempted re-creation");
+    return helpers.log(`settings file not created properly in guild: ${message.guild.id}. Attempted re-creation`);
   }
   //Check calendar file becoming corrupted.
   try {
@@ -91,7 +91,7 @@ client.on("message", (message) => {
   } catch (err) {
     guilds.create(message.guild);
     message.channel.send("Sorry, the database for this server had to be re-created, you'll have to run the setup process again :(");
-    return helpers.log("calendar file not created properly in guild: " + message.guild.id + ". Attempted re-creation");
+    return helpers.log(`calendar file not created properly in guild: ${message.guild.id}. Attempted re-creation`);
   }
   //Check if the database structure is up to date.
   try {
@@ -120,12 +120,12 @@ client.on("message", (message) => {
   if (!helpers.checkPermissions(message) && (!users[message.author.id] || users[message.author.id].permissionChecker === "1" || !users[message.author.id].permissionChecker)) {
     if (restricted.allCommands.includes(cmd)) {
       if (!helpers.checkRole(message)) {
-        return message.channel.send("You must have the `" + guildSettings.allowedRoles[0] + "` role to use Niles in this server");
+        return message.channel.send(`You must have the \`${guildSettings.allowedRoles[0]}\` role to use Niles in this server`);
       }
       try {
         restricted.run(message);
       } catch (err) {
-        helpers.log("error in restricted permissions " + err);
+        helpers.log(`error in restricted permissions ${err}`);
       }
       return;
     }
@@ -135,7 +135,7 @@ client.on("message", (message) => {
   if (!guildSettings.calendarID || !guildSettings.timezone) {
     try {
       if (!helpers.checkRole(message)) {
-        return message.channel.send("You must have the `" + guildSettings.allowedRoles[0] + "` role to use Niles in this server")
+        return message.channel.send(`You must have the \`${guildSettings.allowedRoles[0]}\` role to use Niles in this server`)
       }
       init.run(message);
     } catch (err) {
@@ -145,18 +145,18 @@ client.on("message", (message) => {
   } else {
     try {
       if (!helpers.checkRole(message)) {
-        return message.channel.send("You must have the `" + guildSettings.allowedRoles[0] + "` role to use Niles in this server")
+        return message.channel.send(`You must have the \`${guildSettings.allowedRoles[0]}\` role to use Niles in this server`)
       }
       commands.run(message);
     } catch (err) {
-      return helpers.log("error running main message handler in guild: " + message.guild.id + ": " + err);
+      return helpers.log(`error running main message handler in guild: ${message.guild.id} : ${err}`);
     }
   }
 });
 
 // ProcessListeners
 process.on("uncaughtException", (err) => {
-  helpers.log("uncaughtException error" + err);
+  helpers.log(`uncaughtException error ${err}`);
   process.exit();
 });
 
@@ -171,7 +171,7 @@ process.on("exit", () => {
 });
 
 process.on("unhandledRejection", (err) => {
-  helpers.log("Promise Rejection: " + err);
+  helpers.log(`Promise Rejection: ${err} at ${err.path}`);
   // watch for ECONNRESET
   if (err.code === "ECONNRESET") {
     helpers.log("Connection Lost, Signalling restart");
