@@ -528,147 +528,109 @@ function quickAddEvent(message, calendarId) {
 
 function displayOptions(message) {
   let pieces = message.content.split(" ");
-  let guildSettings = helpers.getGuildSettings(message.guild.id, "settings");
-  if (pieces[1] === "help") {
-    if (pieces[2] === "1") {
-      guildSettings.helpmenu = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Okay I've turned the calendar help menu on");
-    } else if (pieces[2] === "0") {
-      guildSettings.helpmenu = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Okay I've turned the calendar help menu off");
+  const arg = pieces[1]
+  const value = pieces[2]
+  const guildId = message.guild.id
+  let guildSettings = helpers.getGuildSettings(guildId, "settings");
+  if (arg === "help") {
+    if (value === "0" || value === "1") {
+      guildSettings.helpmenu = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send ((value === "1") ? "Okay I've turned the calendar help menu on" : "Okay I've turned the calendar help menu off");
     } else {
       message.channel.send("Please only use 0 or 1 for the calendar help menu options, (off or on)");
     }
-  } else if (pieces[1] === "pin") {
-    if (pieces[2] === "1") {
-      guildSettings.pin = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Okay I've turned pinning on");
-    } else if (pieces[2] === "0") {
-      guildSettings.pin = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Okay I've turned pinning off");
+  } else if (arg === "pin") {
+    if (value === "0" || value === "1") {
+      guildSettings.pin = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Okay I've turned pinning on" : "Okay I've turned pinning off");
     } else {
       message.channel.send("Please only use 0 or 1 for the calendar help menu options, (off or on)");
     }
-  } else if (pieces[1] === "format") {
-    if (pieces[2] === "12") {
-      guildSettings.format = 12;
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Set to 12-Hour clock format");
-    } else if (pieces[2] === "24") {
-      guildSettings.format = 24;
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Set to 24-Hour clock format");
+  } else if (arg === "format") {
+    if (value === "12" || value === "24") {
+      guildSettings.format = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "12") ? "Set to 12-Hour clock format" : "Set to 24-Hour clock format");
     } else {
       message.channel.send("Please only use 12 or 24 for the clock display options");
     }
-  } else if (pieces[1] === "tzdisplay") {
-    if (pieces[2] === "1") {
+  } else if (arg === "tzdisplay") {
+    if (value === "0" || value === "1") {
       guildSettings.tzDisplay = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Turned timezone display on");
-    } else if (pieces[2] === "0") {
-      guildSettings.tzDisplay = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Turned timezone display off");
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Turned timezone display on" : "Turned timezone display off");
     } else {
       message.channel.send("Please only use 0 or 1 for the calendar timzone display options, (off or on)");
     }
-  } else if (pieces[1] === "emptydays") {
-    if (pieces[2] === "1") {
-      guildSettings.emptydays = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of empty days to 1 (on)");
-    } else if (pieces[2] === "0") {
-      guildSettings.emptydays = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of empty days to 0 (off)");
+  } else if (arg === "emptydays") {
+    if (value === "0" || value === "1") {
+      guildSettings.emptydays = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Changed display of empty days to 1 (on)" : "Changed display of empty days to 0 (off)");
     } else {
       message.channel.send("Please only use 0 or 1 for the calendar empty days display options, (off or on)");
     }
-  } else if (pieces[1] === "showpast") {
-    if (pieces[2] === "1") {
-      guildSettings.showpast = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of today's past events to 1 (on)");
-    } else if (pieces[2] === "0") {
-      guildSettings.showpast = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of today's past events 0 (off)");
+  } else if (arg === "showpast") {
+    if (value === "0" || value === "1") {
+      guildSettings.showpast = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Changed display of today's past events to 1 (on)" : "Changed display of today's past events 0 (off)");
     } else {
       message.channel.send("Please only use 0 or 1 for the display of today's past events option. (off or on) ");
     }
-  } else if (pieces[1] === "trim") {
-    if (pieces[2] !== null) {
-      let size = parseInt(pieces[2]);
-      if(size.isNaN){
-        size = 0;
-      }
+  } else if (arg === "trim") {
+    if (value !== null) {
+      let size = parseInt(value);
+      if (size.isNaN) size = 0;
       guildSettings.trim = size;
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed trimming of event titles to "+size+" (0 = off)");
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send(`Changed trimming of event titles to ${size} (0 = off)`);
     } else  {
-      message.channel.send("Please provide a number to trim event titels. (0 = don't trim!)");
+      message.channel.send("Please provide a number to trim event titles. (0 = don't trim!)");
     }
-  } else if (pieces[1] === "days") {
-    if (pieces[2] !== null) {
+  } else if (arg === "days") {
+    if (value !== null) {
       let size = parseInt(pieces[2]);
-      if(size.isNaN){
-        size = 7;
-      }
-      // limit the max value to keep effort and storage sanity
-      if(size > 90){
-        size = 90;
-      }
+      if (size.isNaN) size = 7;
+      if (size > 90) size = 90; // limit the max value to keep effort and storage sanity
       guildSettings.days = size;
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed days to display to: "+size + " (you may have to use `!displayoptions emptydays 0`)");
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send(`Changed days to display to: ${size} (you may have to use \`!displayoptions emptydays 0\``);
     } else {
       message.channel.send("Please provide a number of days to display. (7 = default, 90 = max)");
     }
-  } else if (pieces[1] === "style") {
-    if (pieces[2] === "code") {
-      guildSettings.style = "code";
+  } else if (arg === "style") {
+    if (value === "code") { 
       // revert dependent options
       guildSettings.inline = "0";
       guildSettings.description = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display style to `code`");
-    } else if (pieces[2] === "embed") {
-      guildSettings.style = "embed";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display style to `embed`");
+    }
+    if (value === "code" || value === "embed") {
+      guildSettings.style = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send(`Changed display style to \`${value}\``);
     } else {
       message.channel.send("Please only use code or embed for the style choice. (see nilesbot.com/customisation)");
     }
-  } else if (pieces[1] === "inline") {
+  } else if (arg === "inline") {
     if (guildSettings.style === "code") {
       message.channel.send("This displayoption is only compatible with the `embed` display style")
-    } else if (pieces[2] === "1") {
-      guildSettings.inline = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed inline events to 1 (on)");
-    } else if (pieces[2] === "0") {
-      guildSettings.inline = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed inline events to 0 (off)");
+    } else if (value === "0" || value === "1") {
+      guildSettings.inline = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Changed inline events to 1 (on)" : "Changed inline events to 0 (off)");
     } else {
       message.channel.send("Please only use 0 or 1 for inline events. (off or on) - see nilesbot.com/customisation");
     }
-  } else if (pieces[1] === "description") {
+  } else if (arg === "description") {
     if (guildSettings.style === "code") {
       message.channel.send("This displayoption is only compatible with the `embed` display style")
-    } else if (pieces[2] === "1") {
-      guildSettings.description = "1";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of descriptions to 1 (on)");
-    } else if (pieces[2] === "0") {
-      guildSettings.description = "0";
-      helpers.writeGuildSpecific(message.guild.id, guildSettings, "settings");
-      message.channel.send("Changed display of descriptions to 0 (off)");
+    } else if (value === "0" || value === "1") {
+      guildSettings.description = value;
+      helpers.writeGuildSpecific(guildId, guildSettings, "settings");
+      message.channel.send((value === "1") ? "Changed display of descriptions to 1 (on)" : "Changed display of descriptions to 0 (off)");
     } else {
       message.channel.send("Please only use 0 or 1 for the display of descriptions (off or on)");
     }
@@ -692,8 +654,6 @@ function deleteEventById(eventId, calendarId, dayMap, message) {
 }
 
 function listSingleEventsWithinDateRange(message, calendarId, dayMap) {
-  let calendar = helpers.getGuildSettings(message.guild.id, "calendar");
-  let guildSettings = helpers.getGuildSettings(message.guild.id, "settings");
 	let eventsArray = [];
   let tz = helpers.getValidTz(message.guild.id);
   let startDate = dayMap[0].toISO();
@@ -749,8 +709,6 @@ function nextEvent(message, calendarId, dayMap) {
 
 function deleteEvent(message, calendarId, dayMap) {
   let deleteMessages = [];
-  let startTime;
-  let endTime;
   let pieces = message.content.split(" ");
   if (!pieces[1]) {
     return message.channel.send("You need to enter an argument for this command. i.e `!scrim xeno thursday 8pm - 9pm`")
@@ -993,12 +951,7 @@ function run(message) {
     message.delete({ timeout: 5000 })
   }
   if (cmd === "count" || helpers.mentioned(message, "count")) {
-    let theCount;
-    if (!timerCount[message.guild.id]) {
-      theCount = 0;
-    } else {
-      theCount = timerCount[message.guild.id];
-    }
+    let theCount = (timerCount[message.guild.id]) ? 1 : 0
     message.channel.send(`There are ${theCount} timer threads running in this guild`);
   }
   if (cmd === "timers" || helpers.mentioned(message, "timers")) {
