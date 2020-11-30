@@ -45,7 +45,7 @@ function clean(channel, numberMessages, recurse) {
         if(err.code===50034) {
           channel.send("Sorry - Due to Discord limitations, Niles cannot clean messages older than 14 days!");
         }
-        helpers.log("clean error in guild " + channel.guild.id + err);
+        helpers.log(`clean error in guild ${channel.guild.id} : ${err}`);
       });
       clean(channel, 100, true);
     } else {
@@ -53,11 +53,11 @@ function clean(channel, numberMessages, recurse) {
         if(err.code===50034) {
           channel.send("Sorry - Due to Discord limitations, Niles cannot clean messages older than 14 days!");
         }
-        helpers.log("clean error in guild " + channel.guild.id + err);
+        helpers.log(`clean error in guild ${channel.guild.id} : ${err}`);
       });
     }
   }).catch((err) => {
-    helpers.log("function clean in guild:" + channel.guild.id + ":" + err);
+    helpers.log(`function clean in guild: ${channel.guild.id} : ${err}`);
   });
 }
 
@@ -69,7 +69,7 @@ function deleteMessages(message) {
     return message.channel.send("You can only use a number to delete messages. i.e. `!clean 10`");
   }
   if (parseInt(pieces[1], 10) > 0 && parseInt(pieces[1], 10) < 100) {
-    message.channel.send("**WARNING** - This will delete " + pieces[1] + " messages in this channel! Are you sure? **(y/n)**");
+    message.channel.send(`**WARNING** - This will delete ${pieces[1]} messages in this channel! Are you sure? **(y/n)**`);
     numberMessages = parseInt(pieces[1], 10);
   }
   if (parseInt(pieces[1], 10) === 100) {
@@ -174,7 +174,7 @@ function getEvents(message, calendarID, dayMap) {
       helpers.writeGuildSpecific(message.guild.id, calendar, "calendar");
     }).catch((err) => {
       if (err.message.includes("notFound")) {
-        helpers.log("function getEvents error in guild: " + message.guild.id + " : 404 error can't find calendar");
+        helpers.log(`function getEvents error in guild: ${message.guild.id} : 404 error can't find calendar`);
         message.channel.send(strings.NO_CALENDAR_MESSAGE);
         clearInterval(autoUpdater[message.guild.id]);
         try {
@@ -187,15 +187,15 @@ function getEvents(message, calendarID, dayMap) {
       }
       //Catching periodic google rejections;
       if (err.message.includes("Invalid Credentials")) {
-        return helpers.log("function getEvents error in guild: " + message.guild.id + " : 401 invalid credentials");
+        return helpers.log(`function getEvents error in guild: ${message.guild.id} : 401 invalid credentials`);
       } else {
-        helpers.log("function getEvents error in guild: " + message.guild.id + " : " + err);
+        helpers.log(`function getEvents error in guild: ${message.guild.id} : ${err}`);
         clearInterval(autoUpdater[message.guild.id]);
       }
     });
   } catch (err) {
     message.channel.send(err.code);
-    return helpers.log("Error in function getEvents in guild: " + message.guild.id + " : " + err);
+    return helpers.log(`Error in function getEvents in guild: ${message.guild.id} : ${err}`);
   }
 }
 
@@ -365,7 +365,7 @@ function startUpdateTimer(message) {
   //Pull updates on set interval
   if (!autoUpdater[message.guild.id]) {
     timerCount[message.guild.id] += 1;
-    helpers.log("Starting update timer in guild: " + message.guild.id);
+    helpers.log(`Starting update timer in guild: ${message.guild.id}`);
     return autoUpdater[message.guild.id] = setInterval(function func() {
       calendarUpdater(message, calendarID, dayMap, timerCount[message.guild.id]);
     }, settings.secrets.calendar_update_interval);
@@ -374,17 +374,17 @@ function startUpdateTimer(message) {
   if (autoUpdater[message.guild.id]._idleTimeout !== settings.secrets.calendar_update_interval) {
     try {
       timerCount[message.guild.id] += 1;
-      helpers.log("Starting update timer in guild: " + message.guild.id);
+      helpers.log(`Starting update timer in guild: ${message.guild.id}`);
       return autoUpdater[message.guild.id] = setInterval(function func() {
         calendarUpdater(message, calendarID, dayMap, timerCount[message.guild.id]);
       }, settings.secrets.calendar_update_interval);
     } catch (err) {
-      helpers.log("error starting the autoupdater" + err);
+      helpers.log(`error starting the autoupdater ${err}`);
       clearInterval(autoUpdater[message.guild.id]);
       delete timerCount[message.guild.id];
     }
   } else {
-    return helpers.log("timer not started in guild: " + message.guild.id);
+    return helpers.log(`timer not started in guild: ${message.guild.id}`);
   }
 }
 
@@ -400,10 +400,8 @@ function postCalendar(message, dayMap) {
         if (err.code === 10008) {
           calendar.calendarMessageId = "";
           helpers.writeGuildSpecific(message.guild.id, calendar, "calendar");
-          return helpers.log("error fetching previous calendar in guild: " + message.guild.id + ":" + err);
-        } else {
-          return helpers.log("error fetching previous calendar in guild: " + message.guild.id + ":" + err);
         }
+        return helpers.log(`error fetching previous calendar in guild: ${message.guild.id} : ${err}`);
       });
     }
     generateCalendar(message, dayMap).then((embed) => {
@@ -427,14 +425,14 @@ function postCalendar(message, dayMap) {
       }, 2000);
     }).catch((err) => {
       if(err===2048) {
-          helpers.log("funtion postCalendar error in guild: " + message.guild.id + ": " + err + " - Calendar too long");
+          helpers.log(`function postCalendar error in guild: ${message.guild.id}: ${err} - Calendar too long`);
         } else {
-          helpers.log("funtion postCalendar error in guild: " + message.guild.id + ": " + err);
+          helpers.log(`function postCalendar error in guild: ${message.guild.id}: ${err}`);
         }
     });
   } catch (err) {
     message.channel.send(err.code);
-    return helpers.log("Error in post calendar in guild: " + message.guild.id + " : " + err);
+    return helpers.log(`Error in post calendar in guild: ${message.guild.id}: ${err}`);
   }
 }
 
@@ -442,7 +440,7 @@ function updateCalendar(message, dayMap, human) {
   let calendar = helpers.getGuildSettings(message.guild.id, "calendar");
   let guildSettings = helpers.getGuildSettings(message.guild.id, "settings");
   if (typeof calendar === "undefined") {
-    helpers.log("calendar undefined in " + message.guild.id + ". Killing update timer.");
+    helpers.log(`calendar undefined in ${message.guild.id}. Killing update timer.`);
     clearInterval(autoUpdater[message.guild.id]);
     try {
       delete timerCount[message.guild.id];
@@ -517,12 +515,12 @@ function quickAddEvent(message, calendarId) {
     let json = resp;
     let promptDate;
     if (resp.start.dateTime) {promptDate=resp.start.dateTime;} else {promptDate=resp.start.date;}
-    message.channel.send("Event `" + resp.summary + "` on `" + promptDate + "` has been created").then((m) => {
+    message.channel.send(`Event \`${resp.summary}\` on \` ${promptDate}\` has been created`).then((m) => {
       m.delete({ timeout: 5000 });
     });
     p.resolve(resp);
   }).catch((err) => {
-    helpers.log("function updateCalendar error in guild: " + message.guild.id + ": " + err);
+    helpers.log(`function updateCalendar error in guild: ${message.guild.id} : ${err}`);
     p.reject(err);
   });
   return p.promise;
@@ -689,7 +687,7 @@ function deleteEventById(eventId, calendarId, dayMap, message) {
       updateCalendar(message, dayMap, true);
     }, 2000);
   }).catch((err) => {
-    helpers.log("function deleteEventById error in guild: " + message.guild.id + ": " + err);
+    helpers.log(`function deleteEventById error in guild: ${message.guild.id}: ${err}`);
   });
 }
 
@@ -827,7 +825,7 @@ function calendarUpdater(message, calendarId, dayMap, timerCount) {
       updateCalendar(message, dayMap, false);
     }, 4000);
   } catch (err) {
-    helpers.log("error in autoupdater in guild: " + message.guild.id + ": " + err);
+    helpers.log(`error in autoupdater in guild: ${message.guild.id}: ${err}`);
     clearInterval(autoUpdater[message.guild.id]);
     try {
       delete timerCount[message.guild.id];
@@ -911,7 +909,7 @@ function run(message) {
     try {
       init.run(message);
     } catch (err) {
-      helpers.log("error trying to run init message catcher in guild: " + message.guild.id + ": " + err);
+      helpers.log(`error trying to run init message catcher in guild: ${message.guild.id}: ${err}`);
     }
     message.delete({ timeout: 5000 });
   }
@@ -932,7 +930,7 @@ function run(message) {
   if (["update", "sync"].includes(cmd) || helpers.mentioned(message, ["update", "sync"])) {
     if (typeof calendar === "undefined") {
       message.channel.send("Cannot find calendar to update, maybe try a new calendar with `!display`");
-      helpers.log("calendar undefined in " + message.guild.id + ". Killing update timer.");
+      helpers.log(`calendar undefined in ${message.guild.id}. Killing update timer.`);
       clearInterval(autoUpdater[message.guild.id]);
       try {
         delete timerCount[message.guild.id];
@@ -965,7 +963,7 @@ function run(message) {
         updateCalendar(message, dayMap, true);
       }, 2000);
     }).catch((err) => {
-      helpers.log("error creating event in guild: " + message.guild.id + ": " + err);
+      helpers.log(`error creating event in guild: ${message.guild.id} : ${err}`);
     });
     message.delete({ timeout: 5000 });
   }
@@ -1001,12 +999,12 @@ function run(message) {
     } else {
       theCount = timerCount[message.guild.id];
     }
-    message.channel.send("There are " + theCount + " timer threads running in this guild");
+    message.channel.send(`There are ${theCount} timer threads running in this guild`);
   }
   if (cmd === "timers" || helpers.mentioned(message, "timers")) {
     const authorId = message.author.id;
     if (authorId === settings.secrets.super_admin || settings.secrets.other_admin.includes(authorId)) {
-      return message.channel.send("There are " + Object.keys(timerCount).length + " timers running across all guilds right now.");
+      return message.channel.send(`There are ${Object.keys(timerCount).length} timers running across all guilds right now.`);
     } else {
       return;
     }

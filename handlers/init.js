@@ -30,7 +30,7 @@ function logId(message) {
     return;
   }
   if (!calendarId) {
-    message.channel.send("You didn't enter a calendar ID, you are currently using `" + guildSettings["calendarID"] + "`");
+    message.channel.send(`You didn't enter a calendar ID, you are currently using \`${guildSettings["calendarID"]}\``);
     return;
   }
   if (!helpers.matchCalType(calendarId, message)) {
@@ -38,7 +38,7 @@ function logId(message) {
     return;
   }
   if (guildSettings["calendarID"] !== "") {
-    message.channel.send("I've already been setup to use ``" + guildSettings["calendarID"] + "`` as the calendar ID in this server, do you want to overwrite this and set the ID to `" + calendarId + "`? **(y/n)**");
+    message.channel.send(`I've already been setup to use \`${guildSettings["calendarID"]}\` as the calendar ID in this server, do you want to overwrite this and set the ID to \`${calendarId}\`? **(y/n)**`);
     helpers.yesThenCollector(message).then(() => {
       writeSetting(message, calendarId, "calendarID");
     }).catch((err) => {
@@ -62,15 +62,15 @@ function logTz(message) {
   }
   if (!tz) { // no input
     if (!currentTz) { // no timezone set
-      return message.channel.send("Enter a timezone using `!tz`, i.e. `!tz America/New_York` or `!tz UTC+4` or `!tz EST` No spaces in formatting.");
+      return message.channel.send("Enter a timezone using `!tz`, i.e. `!tz America/New_York` or `!tz UTC+4` or `!tz EST`");
     } else { // timezone set
-      return message.channel.send("You didn't enter a timezone, you are currently using `" + currentTz + "`");
+      return message.channel.send(`You didn't enter a timezone, you are currently using \`${currentTz}\``);
     }
   }
   // valid input
   if (helpers.validateTz(tz)) { // passes validation
     if (currentTz) { // timezone set
-      message.channel.send("I've already been setup to use `" + currentTz + "`, do you want to overwrite this and use `" + tz + "`? **(y/n)** ");
+      message.channel.send(`I've already been setup to use \`${currentTz}\`, do you want to overwrite this and use \`${tz}\`? **(y/n)**`);
       // collect yes
       helpers.yesThenCollector(message).then(() => {
         writeSetting(message, tz, "timezone");

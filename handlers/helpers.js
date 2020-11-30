@@ -147,7 +147,7 @@ function deleteFolderRecursive(path) {
 function writeGuildSpecific(guildid, json, file) {
   let fullPath = path.join(__dirname, "..", "stores", guildid, file + ".json");
   fs.writeFile(fullPath, JSON.stringify(json, "", "\t"), (err) => {
-    if (err) return log("error writing guild specific database: " + err);
+    if (err) return log(`error writing guild specific database: ${err}`);
   });
 }
 
